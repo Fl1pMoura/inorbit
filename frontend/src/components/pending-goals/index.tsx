@@ -1,22 +1,9 @@
 import { Plus } from 'lucide-react'
-import { OutlineButton } from './ui/outline-button'
-import { usePendingGoals } from '../app/hooks/usePendingGoals'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { goalsCompletionService } from '../app/services/goalsCompletion'
+import { OutlineButton } from '../ui/outline-button'
+import { usePendingGoalsComponent } from './usePendingGoalsComponent'
 
 export function PendingGoals() {
-  const { pendingGoals } = usePendingGoals()
-  const queryClient = useQueryClient()
-
-  const handleCompleteGoal = async (goalId: string) => {
-    await goalsCompletionService.create({ goalId })
-    queryClient.invalidateQueries({ queryKey: ['get-summary'] })
-    queryClient.invalidateQueries({ queryKey: ['get-pending-goals'] })
-  }
-
-  const { mutateAsync: CompleteGoal } = useMutation({
-    mutationFn: handleCompleteGoal,
-  })
+  const { CompleteGoal, pendingGoals } = usePendingGoalsComponent()
 
   return (
     <div className="flex gap-2 items-center flex-wrap">
