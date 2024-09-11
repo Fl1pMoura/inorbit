@@ -13,6 +13,7 @@ dayjs.locale(ptBR)
 
 export function Summary() {
   const { summaryData } = useSummary()
+  console.log(summaryData)
 
   const firstDayOfWeek = dayjs().startOf('week').format('D MMM')
   const lastDayOfWeek = dayjs().endOf('week').format('D MMM')
@@ -62,37 +63,48 @@ export function Summary() {
 
       <div className="flex flex-col gap-6">
         <h2 className="text-xl font-medium">Sua semana</h2>
+        {!summaryData?.goalsPerDay && (
+          <p className="text-zinc-400 text-sm leading-relaxed">
+            Você ainda não completou nenhuma meta essa semana.
+          </p>
+        )}
 
-        {Object.entries(summaryData!.goalsPerDay).map(([date, goals]) => {
-          const weekDay = dayjs(date).format('dddd')
-          const formattedDate = dayjs(date).format('D [ de ] MMMM')
-          return (
-            <div key={date} className="flex flex-col gap-4">
-              <h3 className="font-medium">
-                <span className="capitalize">{weekDay} </span>
-                <span className="text-zinc-400 text-xs leading-snug font-normal">
-                  ({formattedDate})
-                </span>
-              </h3>
+        {summaryData?.goalsPerDay &&
+          Object.entries(summaryData?.goalsPerDay).map(([date, goals]) => {
+            const weekDay = dayjs(date).format('dddd')
+            const formattedDate = dayjs(date).format('D [ de ] MMMM')
+            return (
+              <div key={date} className="flex flex-col gap-4">
+                <h3 className="font-medium">
+                  <span className="capitalize">{weekDay} </span>
+                  <span className="text-zinc-400 text-xs leading-snug font-normal">
+                    ({formattedDate})
+                  </span>
+                </h3>
 
-              <ul className="flex flex-col gap-3">
-                {goals.map(goal => {
-                  const formattedHour = dayjs(goal.completedAt).format('HH:mm')
-                  return (
-                    <li key={goal.id} className="flex items-center gap-2">
-                      <CheckCircle2 className="size-4 text-pink-500" />
-                      <span className="text-sm leading-relaxed text-zinc-400">
-                        Você completou “
-                        <span className="text-zinc-100">{goal.title}</span>” às{' '}
-                        <span className="text-zinc-100">{formattedHour}h</span>
-                      </span>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          )
-        })}
+                <ul className="flex flex-col gap-3">
+                  {goals.map(goal => {
+                    const formattedHour = dayjs(goal.completedAt).format(
+                      'HH:mm'
+                    )
+                    return (
+                      <li key={goal.id} className="flex items-center gap-2">
+                        <CheckCircle2 className="size-4 text-pink-500" />
+                        <span className="text-sm leading-relaxed text-zinc-400">
+                          Você completou “
+                          <span className="text-zinc-100">{goal.title}</span>”
+                          às{' '}
+                          <span className="text-zinc-100">
+                            {formattedHour}h
+                          </span>
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            )
+          })}
       </div>
     </section>
   )
